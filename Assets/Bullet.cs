@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    //弾の生存時間
+    int bulletTime = 300;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +19,9 @@ public class Bullet : MonoBehaviour
         //弾のワールド座標取得
         Vector3 pos = transform.position;
 
+        //弾の生存時間を減らす
+        bulletTime--;
+
         //上にまっすぐ飛ぶ
         pos.z += 0.05f;
 
@@ -26,6 +32,23 @@ public class Bullet : MonoBehaviour
         if (pos.z >= 20)
         {
             Destroy(this.gameObject);
+        }
+
+        //弾の生存時間がなくなったら消滅させる
+        if (bulletTime <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //もし当たったオブジェクトのタグがEnemyだったら
+        if (other.gameObject.tag == "Enemy")
+        {
+            //当たったオブジェクトのEnemyスクリプトを
+            //呼び出してDamage関数を実行させる
+            other.GetComponent<Enemy>().Damage();
         }
     }
 }
